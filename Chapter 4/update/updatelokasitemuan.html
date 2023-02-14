@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Update Data</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/css/lineicons.css" />
+    <link rel="stylesheet" href="/assets/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="/assets/css/fullcalendar.css" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+  </head>
+  <body>
+    <br>
+    <form id="update-form">
+      <div class="col-lg-8 container">
+        <!-- input style start -->
+        <div class="card-style mb-30">
+          <h1 class="mb-25">Update Lokasi Temuan</h1>
+
+          <div class="input-style-1">
+            <input type="hidden" id="update-id" />
+          </div>
+
+          <div class="input-style-1">
+            <label for="update-lokasi">Lokasi:</label>
+            <input type="text" id="update-lokasi" required />
+          </div>
+
+          <div class="input-style-1">
+            <label for="update-kelurahan">Kelurahan:</label>
+            <input type="text" id="update-kelurahan" required />
+          </div>
+
+          <div class="input-style-1">
+            <label for="update-kecamatan">Kecamatan:</label>
+            <input type="text" id="update-kecamatan" required />
+          </div>
+
+          <div class="input-style-1">
+            <label for="update-kota">Kota:</label>
+            <input type="text" id="update-kota" required />
+          </div>
+
+          <div class="input-style-1">
+            <label for="update-provinsi">Provinsi:</label>
+            <input type="text" id="update-provinsi" required />
+          </div>
+
+            <a href="/tabel/lokasitemuan.html" class="main-btn dark-btn rounded-full btn-hover"
+            >BACK
+            </a>
+
+            <button type="submit" id="update-submit"
+              class="main-btn warning-btn rounded-full btn-hover"
+              >UPDATE
+            </button>
+
+          
+          <!-- end input -->
+          
+        </div>
+      </div>
+
+      <!-- <input type="hidden" id="update-id" />
+      <label for="update-lokasi">lokasi:</label>
+      <input type="text" id="update-lokasi" required /> -->
+      <!-- <label for="update-kelurahan">Lokasi Ditemukan:</label>
+      <input type="text" id="update-kelurahan" required /> -->
+      <!-- <label for="update-kecamatan">Waktu Ditemukan:</label>
+      <input type="text" id="update-kecamatan" required />
+      <button type="submit" id="update-submit">Update</button> -->
+    </form>
+    <script>
+      const API_ENDPOINT = "https://sbc-sebatcabut.herokuapp.com";
+
+      let params = new URLSearchParams(location.search);
+      let id = params.get("id");
+
+      const getDataById = (id) => {
+        fetch(API_ENDPOINT + "/lokasitemuan/" + id)
+          .then((response) => response.json())
+          .then((data) => {
+            displayDataById(data.data.data);
+          })
+          .catch((error) => console.log(error));
+      };
+
+      getDataById(id); //move this here
+
+      const displayDataById = (data) => {
+        document.getElementById("update-id").value = data.id;
+        document.getElementById("update-lokasi").value = data.lokasi;
+        document.getElementById("update-kelurahan").value = data.kelurahan;
+        document.getElementById("update-kecamatan").value = data.kecamatan;
+        document.getElementById("update-kota").value = data.kota;
+        document.getElementById("update-provinsi").value = data.provinsi;
+      };
+
+      document
+        .getElementById("update-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          let id = document.getElementById("update-id").value;
+          let lokasi = document.getElementById("update-lokasi").value;
+          let kelurahan = document.getElementById("update-kelurahan").value;
+          let kecamatan = document.getElementById("update-kecamatan").value;
+          let kota = document.getElementById("update-kota").value;
+          let provinsi = document.getElementById("update-provinsi").value;
+
+          fetch(API_ENDPOINT + "/lokasitemuan/" + id, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              lokasi: lokasi,
+              kelurahan: kelurahan,
+              kecamatan: kecamatan,
+              kota: kota,
+              provinsi: provinsi,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              window.location.href = "/tabel/lokasitemuan.html";
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+      //   // Fetch data by id
+      //   let params = new URLSearchParams(location.search);
+      //   let id = params.get("id");
+      //   fetch("https://sbc-sebatcabut.herokuapp.com/lokasitemuan/" + id)
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //       document.getElementById("id").value = data.id;
+      //       document.getElementById("lokasi").value = data.lokasi;
+      //       document.getElementById("kelurahan").value =
+      //         data.kelurahan;
+      //       document.getElementById("kecamatan").value =
+      //         data.kecamatan;
+      //     })
+      //     .catch((error) => {
+      //       console.error(error);
+      //       console.error("Data dari API tidak sesuai");
+      //     });
+
+      //   // Event listener for update form
+      //   document
+      //     .getElementById("update-form")
+      //     .addEventListener("submit", function (object) {
+      //       object.preventDefault();
+      //       let id = document.getElementById("update-id").value;
+      //       let lokasi = document.getElementById("update-lokasi").value;
+      //       let kelurahan = document.getElementById(
+      //         "update-kelurahan"
+      //       ).value;
+      //       let kecamatan = document.getElementById(
+      //         "update-kecamatan"
+      //       ).value;
+      //       window.location.href = "index.html";
+
+      //       // Code untuk mengupdate data dengan id tertentu
+      //       // misal menggunakan fetch
+      //       //   fetch('API_URL' + id, {
+      //       //     method: 'PUT',
+      //       //     headers: {
+      //       //       'Content-Type': 'application/json'
+      //       //     },
+      //       //     body: JSON.stringify({
+      //       //       lokasi: lokasi,
+      //       //       kelurahan: kelurahan,
+      //       //       kecamatan: kecamatan
+      //       //     })
+      //       //   })
+      //       //     .then(response => response.json())
+      //       //     .then(data => {
+      //       //       console.log('Success:', data);
+      //       //     })
+      //       //     .catch((error) => {
+      //       //       console.error('Error:', error);
+      //       //     });
+      //     });
+    </script>
+        <script src="/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/js/Chart.min.js"></script>
+        <script src="/assets/js/dynamic-pie-chart.js"></script>
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/fullcalendar.js"></script>
+        <script src="/assets/js/jvectormap.min.js"></script>
+        <script src="/assets/js/world-merc.js"></script>
+        <script src="/assets/js/polyfill.js"></script>
+        <script src="/assets/js/main.js"></script>
+  </body>
+</html>

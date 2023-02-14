@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Update Data</title>
+  </head>
+  <body>
+    <h1>Update Data</h1>
+    <!--Membuat form Update-->
+    <!--id="update-form" digunakan untuk mamanggil isi atau data-->
+    <form id="update-form">
+      <input type="hidden" id="update-id" />
+      <label for="update-no_register">No Register:</label>
+      <input type="text" id="update-no_register" required />
+      <label for="update-no_inventaris">No Inventaris:</label>
+      <input type="text" id="update-no_inventaris" required />
+      <label for="update-nama_koleksi">Nama Koleksi:</label>
+      <input type="text" id="update-nama_koleksi" required />
+      <label for="update-lokasi_temuan">Lokasi Ditemukan:</label>
+      <input type="text" id="update-lokasi_temuan" required />
+      <label for="update-tahun_perolehan">Waktu Ditemukan:</label>
+      <input type="text" id="update-tahun_perolehan" required />
+      <label for="update-determinator">Determinator:</label>
+      <input type="text" id="update-determinator" required />
+      <label for="update-keterangan">Keterangan:</label>
+      <input type="text" id="update-keterangan" required />
+      <button type="submit" id="update-submit">Update</button>
+    </form>
+    <script>
+      const API_ENDPOINT = "https://sbc-sebatcabut.herokuapp.com";
+
+      let params = new URLSearchParams(location.search);
+      let id = params.get("id");
+      
+      const getDataById = (id) => {
+        fetch(API_ENDPOINT + "/fosil/" + id)
+          .then((response) => response.json())
+          .then((data) => {
+            displayDataById(data.data.data);
+          })
+          .catch((error) => console.log(error));
+      };
+
+      getDataById(id); //move this here
+
+      const displayDataById = (data) => {
+        document.getElementById("update-id").value = data.id;
+        document.getElementById("update-no_register").value = data.no_register;
+        document.getElementById("update-no_inventaris").value = data.no_inventaris;
+        document.getElementById("update-nama_koleksi").value = data.nama_koleksi;
+        document.getElementById("update-lokasi_temuan").value = data.lokasi_temuan;
+        document.getElementById("update-tahun_perolehan").value = data.tahun_perolehan;
+        document.getElementById("update-determinator").value = data.determinator;
+        document.getElementById("update-keterangan").value = data.keterangan;
+      };
+
+      document
+        // Mengambil elemen form
+        .getElementById("update-form")
+        // Menambahkan event listener untuk form submission
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          // Mengambil nilai dari input
+          let id = document.getElementById("update-id").value;
+          let no_register = document.getElementById("update-no_register").value;
+          let no_inventaris = document.getElementById("update-no_inventaris").value;
+          let nama_koleksi = document.getElementById("update-nama_koleksi").value;
+          let lokasi_temuan = document.getElementById("update-lokasi_temuan").value;
+          let tahun_perolehan = document.getElementById("update-tahun_perolehan").value;
+          let determinator = document.getElementById("update-determinator").value;
+          let keterangan = document.getElementById("update-keterangan").value;
+
+          fetch(API_ENDPOINT + "/fosil/" + id, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Memanggil fungsi postData dengan nilai yang diambil dari form yang diinput
+            body: JSON.stringify({
+              no_register: no_register,
+              no_inventaris: no_inventaris,
+              nama_koleksi: nama_koleksi,
+              lokasi_temuan: lokasi_temuan,
+              tahun_perolehan: tahun_perolehan,
+              determinator: determinator,
+              keterangan: keterangan,
+            }),
+          })
+          // Event listener untuk button update
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              //window.location.href digunakan untuk menetukan alamat atau halaman yang dituju sestslah buttom di klik
+              window.location.href = "index.html";
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    </script>
+  </body>
+</html>
